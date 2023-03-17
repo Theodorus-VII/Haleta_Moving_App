@@ -10,10 +10,12 @@ GROUP MEMBERS
 | Tewodros Berhanu | UGR/9715/13 | SECTION 2 |
 | Yohannes Habtamu | UGR/1581/13 | SECTION 2|
 
-
+HALETA
 Medical Record Management App
 
 CRUD Features:
+
+Our team came up with three fantastic ideas for our business features. We have decided to select the first two and keep the third one as an optional (alternative) feature.
 
 1. Patient Management:
 Create new patient records
@@ -27,7 +29,7 @@ Read/view medical procedure records
 Update existing medical procedure records
 Delete medical procedure records
 
-3. Managing appointment schedules:
+3. Managing appointment schedules: (Optional/ alternative)
 Creating new appointments for patients with their preferred doctor and time slot. 
 View their upcoming appointments 
 Update appointments or 
