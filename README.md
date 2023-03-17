@@ -1,6 +1,6 @@
 # Mobile-Application-Development-Group-Assignment
 
-GROUP MEMBERS
+# GROUP MEMBERS
 
 | Name | ID | Section |
 | ------------- | ------------ | --------- |
