@@ -12,10 +12,11 @@ GROUP MEMBERS
 
 # HALETA
 Medical Record Management App
+# _
 
 CRUD Features:
 
-Our team came up with three fantastic ideas for our business features. We have decided to select the first two and keep the third one as an optional (alternative) feature.
+Our team came up with three fantastic ideas for our business features. We have decided to implement the first two and keep the third one as an optional (alternative) feature.
 
 1. Patient Management:
 Create new patient records
