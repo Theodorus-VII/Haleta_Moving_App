@@ -10,12 +10,17 @@
 | Tewodros Berhanu | UGR/9715/13 | SECTION 2 |
 | Yohannes Habtamu | UGR/1581/13 | SECTION 2|
 
-# HALETA
-Packers and Movers App (new Idea)<br>
+Based on the feedback from our Instructor Mr. Betsegaw, we have opted for a new idea. 
+#
+Packers and Movers App (<b>new Idea<b>)<br>
 #
 Medical Record Management App (Discarded)
 #
-Based on the feedback from our Instructor Mr. Betsegaw, we have opted for a new idea. 
+
+# HALETA
+#
+Updated Title
+#
 # Description: 
 This will be an app people can use when they need to relocate to a new place. Moving can be hectic and difficult to manage. Our app plans to connect users with contract service providers who professionally pack and move user's belongings efficiently and securely. 
 
@@ -23,12 +28,17 @@ This will be an app people can use when they need to relocate to a new place. Mo
 Two Roles
 1. Users 
 2. Contract Service Providers 
+
+
 # Features: 
-1. Users can search and rank service providers by seeing their rating and make appointments based on the quotation (general information) they provide
+1. Users can search and enlist the service providers by seeing their rating and make appointments based on the quotation (general information) they provide. The users will be expected to make a reservation (appointment) for the services of the service provider for a specific date (could be more than one day)
 2.  Users will get notifications from service providers during each stage of the process and users will be privy to service provider's pictures, ID and plate number during the move for security reasons. 
 3. Users can give ratings and write reviews for service providers after getting service
 
-# 
+
+
+
+# Discarded Title
 Features and Roles  for  the <b>Discarded</b> (Rejected) idea (Medical Record Management)   
 CRUD Features:
 
