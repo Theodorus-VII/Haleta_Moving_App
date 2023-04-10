@@ -18,7 +18,8 @@ Medical Record Management App (Discarded)
 #
 
 # HALETA
-# Updated Idea
+#
+Updated Idea
 
 # Description: 
 This will be an app people can use when they need to relocate to a new place. Moving can be hectic and difficult to manage. Our app plans to connect users with contract service providers who professionally pack and move user's belongings efficiently and securely. 
@@ -37,7 +38,7 @@ Two Roles
 
 
 
-# Discarded Title
+# Discarded Idea
 Features and Roles  for  the <b>Discarded</b> (Rejected) idea (Medical Record Management)   
 CRUD Features:
 
