@@ -11,14 +11,14 @@
 | Yohannes Habtamu | UGR/1581/13 | SECTION 2|
 
 # HALETA
-Packers and Movers App (new Idea)
+Packers and Movers App (new Idea)<br>
 Medical Record Management App (Discarded)
 #
 Based on the feedback from our Instructor Mr. Betsegaw, we have opted for a new idea. 
 # Description: 
 This will be an app people can use when they need to relocate to a new place. Moving can be hectic and difficult to manage. Our app plans to connect users with contract service providers who professionally pack and move user's belongings efficiently and securely. 
 
-# Authorization and Authentication:
+ Authorization and Authentication:
 Two Roles
 1. Users 
 2. Contract Service Providers 
@@ -27,9 +27,7 @@ Two Roles
 2.  Users will get notifications from service providers during each stage of the process and users will be privy to service provider's pictures, ID and plate number during the move for security reasons. 
 3. Users can give ratings and write reviews for service providers after getting service
 
-#
-
-
+# Discarded (Rejected)  
 CRUD Features:
 
 Our team came up with three fantastic ideas for our business features.<br>
