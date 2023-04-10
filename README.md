@@ -12,7 +12,7 @@
 
 Based on the feedback from our Instructor Mr. Betsegaw, we have opted for a new idea. 
 #
-Packers and Movers App (<b>new Idea<b>)<br>
+Packers and Movers App (<b>new Idea</b>)<br>
 #
 Medical Record Management App (Discarded)
 #
