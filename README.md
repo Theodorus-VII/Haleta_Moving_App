@@ -27,7 +27,8 @@ Two Roles
 2.  Users will get notifications from service providers during each stage of the process and users will be privy to service provider's pictures, ID and plate number during the move for security reasons. 
 3. Users can give ratings and write reviews for service providers after getting service
 
-# Discarded (Rejected)  
+# 
+Features and Roles  for  the <b>Discarded<b> (Rejected) idea (Medical Record Management)   
 CRUD Features:
 
 Our team came up with three fantastic ideas for our business features.<br>
