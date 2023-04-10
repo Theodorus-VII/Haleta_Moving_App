@@ -12,6 +12,7 @@
 
 # HALETA
 Packers and Movers App (new Idea)<br>
+#
 Medical Record Management App (Discarded)
 #
 Based on the feedback from our Instructor Mr. Betsegaw, we have opted for a new idea. 
@@ -28,7 +29,7 @@ Two Roles
 3. Users can give ratings and write reviews for service providers after getting service
 
 # 
-Features and Roles  for  the <b>Discarded<b> (Rejected) idea (Medical Record Management)   
+Features and Roles  for  the <b>Discarded</b> (Rejected) idea (Medical Record Management)   
 CRUD Features:
 
 Our team came up with three fantastic ideas for our business features.<br>
