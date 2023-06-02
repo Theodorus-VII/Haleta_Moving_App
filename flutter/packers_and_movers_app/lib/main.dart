@@ -102,11 +102,18 @@ final _router = GoRouter(routes: [
         return OrderDetail();
       }),
   GoRoute(
-      name: 'user_see_bookings',
+      name: 'mover_see_bookings',
       path: '/mover/see_bookings',
       builder: (BuildContext context, GoRouterState state) {
         return MoverSeeOrders();
       }),
+  GoRoute(
+    path: '/mover',
+    name: 'mover_main',
+    builder: (context, state) {
+      return MoverMain();
+    },
+  ),
 ]);
 void main() {
   BlocOverrides.runZoned(() {
@@ -117,7 +124,7 @@ void main() {
             create: (context) => AuthBloc(
                 authRepository: AuthRepository(RemoteAuthDataProvider()))),
         BlocProvider(create: (context) => UserMainBloc()),
-        BlocProvider(create: (context)=>AppointmentBloc()),
+        BlocProvider(create: (context) => AppointmentBloc()),
       ],
       child: MaterialApp.router(
         theme: theme,
