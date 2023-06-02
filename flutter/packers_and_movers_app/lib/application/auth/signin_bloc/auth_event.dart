@@ -5,8 +5,11 @@ import 'package:packers_and_movers_app/domain/models/user_signup_dto.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
+  @override
+  List<Object> get props => [];
 }
 
+class AuthDefaultEvent extends AuthEvent{}
 class AuthSignIn extends AuthEvent {
   final String email;
   final String password;
@@ -17,13 +20,12 @@ class AuthSignIn extends AuthEvent {
 }
 
 class AuthUserUpdate extends AuthEvent {
-  final User user;
-  final int id;
+  final String password;
 
-  const AuthUserUpdate({required this.user, required this.id});
+  const AuthUserUpdate(this.password);
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [];
 }
 
 class AuthUserSignUp extends AuthEvent {
@@ -68,3 +70,10 @@ class AuthUserDelete extends AuthEvent {
   @override
   List<Object> get props => [id];
 }
+
+class AuthGetUser extends AuthEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class AuthLogoutEvent extends AuthEvent {}

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:packers_and_movers_app/presentation/pages/user_screens/user_management.dart';
+import 'package:packers_and_movers_app/application/appointments/bloc/appointment_bloc.dart';
+import 'package:packers_and_movers_app/presentation/pages/user_screens/user.dart';
 import '../../../application/user/bloc/user_main_bloc.dart';
 import '../../../domain/models/mover.dart';
 import '../../widgets/widgets.dart';
@@ -18,25 +19,21 @@ class UserMain extends StatefulWidget {
 
 class _UserMainState extends State<UserMain> {
   int _currentIndex = 1;
-  // List moversList = List.generate(
-  //     20,
-  //     (index) => {
-  //           'moverId': index,
-  //           'name': 'Mover$index',
-  //           'city': 'Addis Ababa',
-  //           'rate': '\$${index * 10}',
-  //           'profileUrl': 'assets/images/profilePicture1'
-  //         });
-  List<Widget> moverWidgetsList = [];
+  List<Mover> moverWidgetsList = [];
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserMainBloc, UserMainState>(
       builder: (context, state) {
-        UserMainEvent event = UserMainScreenEvent();
-        BlocProvider.of<UserMainBloc>(context).add(event);
+        print('user loading $state');
+        if (state is UserMainScreenState) {
+          UserMainEvent event = const UserMainScreenEvent();
+          BlocProvider.of<UserMainBloc>(context).add(event);
+        }
+        // print("mover details state is $state");
         int itemCount = 0;
         if (state is UserMainScreenLoadingState) {
+          moverWidgetsList = state.movers;
           itemCount = state.movers.length;
         }
         return Scaffold(
@@ -62,21 +59,21 @@ class _UserMainState extends State<UserMain> {
 
                       print('state is $state');
                       if (state is UserMainScreenLoadingState) {
-                        print('movers ${state.movers}');
-                        print('index $index');
+                        // print('movers ${state.movers}');
+                        // print('index $index');
                         Mover mover = state.movers[index];
 
-                        for (int i = 0; i < state.movers.length; i++) {
-                          print(state.movers[i]);
-                        }
+                        // for (int i = 0; i < state.movers.length; i++) {
+                        //   print(state.movers[i]);
+                        // }
                         // print(mover);
-                        print('username: ${mover.username}');
-                        print('location: ${mover.location}');
-                        print('fee: ${mover.baseFee}');
+                        // print('username: ${mover.username}');
+                        // print('location: ${mover.location}');
+                        // print('fee: ${mover.baseFee}');
                         mover.carPic =
-                            'http://localhost:3000/movers/images/car/8';
+                            'http://10.0.2.2:3000/movers/images/car/${mover.Id}';
                         mover.profilePic =
-                            'http://localhost:3000/movers/images/profile/8';
+                            'http://10.0.2.2:3000/movers/images/profile/${mover.Id}';
                         return moverGridView(mover);
                       } else {
                         // return moverGridView(
@@ -94,6 +91,7 @@ class _UserMainState extends State<UserMain> {
                     itemCount: itemCount,
                     itemBuilder: (context, index) {
                       final itemIndex = index + 6;
+                      print('user loading state is $state');
                       if (state is UserMainScreenLoadingState) {
                         Mover mover = state.movers[index];
                         return moverGridView(mover);
@@ -134,6 +132,8 @@ class _UserMainState extends State<UserMain> {
             icon: GestureDetector(
               onTap: () {
                 setState(() {
+                  final bookingsEvent = AppointmentUserRead(moverWidgetsList);
+                  BlocProvider.of<AppointmentBloc>(context).add(bookingsEvent);
                   context.push('/user/order_info');
                 });
               },
@@ -161,45 +161,56 @@ class _UserMainState extends State<UserMain> {
     String carImageUrl = mover.carPic as String;
     String moverCity = mover.location;
     String baseRate = mover.baseFee;
-    
-    return GestureDetector(
-      onTap: () {
-        // context.go('/user/mover_detail');
 
-        UserMainEvent event = UserMoverDetails(mover);
-        BlocProvider.of<UserMainBloc>(context).add(event);
-        context.pushNamed('mover_detail');
-      },
-      child: Container(
-        // padding: const EdgeInsets.all(10.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-        width: 220,
-        height: 240,
-        child: Card(
-          child: Column(
-            children: [
-              Expanded(
-                flex: 3,
-                // child: Image.network((carImageUrl == null)
-                //     ? ('http://10.0.2.2:3000/movers/images/car/10000')
-                //     : carImageUrl)),
-                child: Image(
-                    image: NetworkImage(
-                        'http://10.0.2.2:3000/movers/images/car/${mover.Id}')),
-              ),
-              Expanded(
-                flex: 2,
-                child: ListTile(
-                  title: Text(moverName),
-                  subtitle: Text(moverCity),
-                  trailing: Text(baseRate),
+    return BlocConsumer<UserMainBloc, UserMainState>(
+        listener: (context, state) {
+      print("mover details state $state");
+      if (state is UserMoverDetailsState) {
+        // context.goNamed('mover_detail');
+        context.go('/user/mover_detail');
+      }
+    }, builder: (context, state) {
+      return GestureDetector(
+        onTap: () {
+          // context.go('/user/mover_detail');
+          print("opening mover details");
+          UserMoverDetails event = UserMoverDetails(mover);
+          BlocProvider.of<UserMainBloc>(context).add(event);
+          print("mover details state $state");
+          print(
+              "mover details ${state == UserMoverDetailsState(mover)} $state");
+        },
+        child: Container(
+          // padding: const EdgeInsets.all(10.0),
+          margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+          width: 220,
+          height: 240,
+          child: Card(
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 3,
+                  // child: Image.network((carImageUrl == null)
+                  //     ? ('http://10.0.2.2:3000/movers/images/car/10000')
+                  //     : carImageUrl)),
+                  child: Image(
+                      image: NetworkImage(
+                          'http://10.0.2.2:3000/movers/images/car/${mover.Id}')),
                 ),
-              ),
-            ],
+                Expanded(
+                  flex: 2,
+                  child: ListTile(
+                    title: Text(moverName),
+                    subtitle: Text(moverCity),
+                    trailing: Text(baseRate),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 

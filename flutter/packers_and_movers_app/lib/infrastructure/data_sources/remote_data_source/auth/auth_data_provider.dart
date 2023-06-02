@@ -28,6 +28,10 @@ class RemoteAuthDataProvider {
             await http.post(uri, body: {'email': email, 'password': password});
         token = json.decode(response.body)['access_token'];
       }
+      if (token == null) {
+        // if token is still null, no connection
+        throw "Failed to sign in";
+      }
 
       print('found token $token');
       apiResponse = await signInWithToken(token: token as String);
@@ -50,7 +54,15 @@ class RemoteAuthDataProvider {
       raw_user['token'] = token;
       raw_user['Id'] = 0;
       print('raw user $raw_user');
-      apiResponse.data = User.fromMap(raw_user);
+      // apiResponse.data = Mover.fromMap(raw_user);
+
+      if (raw_user['role'] == 'MOVER') {
+        apiResponse.data = Mover.fromMap(raw_user);
+        print("made mover");
+      } else {
+        apiResponse.data = User.fromMap(raw_user);
+        print("made user");
+      }
       print('here');
     } on SocketException {
       apiResponse.apiError = ApiError(error: "Server error");
@@ -130,9 +142,10 @@ class RemoteAuthDataProvider {
       // ));
 
       var request = http.MultipartRequest('POST', Uri.parse('$baseUrl'));
+      // var e = await http.MultipartFile.fromBytes(field, value)
       request.headers.addAll({"Authorization": "Bearer $token"});
       if (image != null) {
-        request.files.add(http.MultipartFile(
+        request.files.add(await http.MultipartFile(
             'file', image.readAsBytes().asStream(), image.lengthSync(),
             filename: image.path.split('/').last));
         var response = await request.send();
@@ -143,5 +156,36 @@ class RemoteAuthDataProvider {
       apiResponse.apiError = e;
     }
     return apiResponse;
+  }
+
+  Future<Mover> getMe() async {
+    Uri uri = Uri.parse('http://localhost:3000/users/me');
+    String? token = await localDataProvider.getToken();
+    if (token == null) {
+      throw "Unauthorized";
+    }
+    var response =
+        await http.get(uri, headers: {"Authorization": "Bearer $token"});
+
+    return Mover.fromJson(response.body);
+  }
+
+  Future<bool> updatePassword(String password) async {
+    Uri uri = Uri.parse("$baseUrl/users");
+    String? token = await localDataProvider.getToken();
+    try {
+      if (token != null) {
+        var response = await http.patch(uri,
+            headers: {"Authorization": "Bearer $token"},
+            body: {"password": password});
+        var res = json.decode(response.body);
+        print(res);
+        await localDataProvider.logout();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 }

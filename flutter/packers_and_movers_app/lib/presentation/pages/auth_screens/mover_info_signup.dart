@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:packers_and_movers_app/application/auth/signin_bloc/auth_event.dart';
 import 'package:packers_and_movers_app/domain/models/mover_signup_dto.dart';
@@ -25,7 +26,21 @@ class _MoverSignupScreenState extends State<MoverSignupScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          print(state);
+          // BlocProvider.of<AuthBloc>(context).add(AuthDefaultEvent());
+          context.goNamed("sigin");
+        } else if (state is SignUpFailed) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content:
+                  Text("Email Taken. Please choose another Email Address")));
+        } else if (state is AuthSignUpSuccess) {
+          BlocProvider.of<AuthBloc>(context).add(AuthDefaultEvent());
+          context.goNamed('signin');
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(),
@@ -111,11 +126,6 @@ class _MoverSignupScreenState extends State<MoverSignupScreen> {
                           if (state is MoverSigningUp) {
                             state.mover['carPic'] = File(_carfile.path);
                           }
-                          // var res = await uploadImage(file.path, widget.url);
-                          // setState(() {
-                          //   state = res;
-                          //   print(res);
-                          // });
                         },
                         child: const Icon(Icons.add)),
                   ],
@@ -123,27 +133,25 @@ class _MoverSignupScreenState extends State<MoverSignupScreen> {
                 ElevatedButton(
                     onPressed: () {
                       // form.save();
-                      if (state is MoverSigningUp) {
-                        print(_locationController.text);
-                        print(_licenceController.text);
-                        print(_baseFeeController.text);
-                        state.mover['location'] = _locationController.text;
-                        state.mover['licenceNumber'] = _licenceController.text;
-                        state.mover['baseFee'] = _baseFeeController.text;
-                        print(state.mover);
+                      setState(() {
+                        print(state);
+                        if (state is MoverSigningUp) {
+                          print(_locationController.text);
+                          print(_licenceController.text);
+                          print(_baseFeeController.text);
+                          state.mover['location'] = _locationController.text;
+                          state.mover['licenceNumber'] =
+                              _licenceController.text;
+                          state.mover['baseFee'] = _baseFeeController.text;
+                          print(state.mover);
 
-                        MoverSignUpDto mover =
-                            MoverSignUpDto.fromMap(state.mover);
+                          MoverSignUpDto mover =
+                              MoverSignUpDto.fromMap(state.mover);
 
-                        final AuthEvent event = AuthMoverSignUpSubmit(mover);
-                        BlocProvider.of<AuthBloc>(context).add(event);
-
-                        if (state is SignUpFailed) {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text(
-                                  "Email Taken. Please choose another Email Address")));
+                          final AuthEvent event = AuthMoverSignUpSubmit(mover);
+                          BlocProvider.of<AuthBloc>(context).add(event);
                         }
-                      }
+                      });
                     },
                     child: const Text("Complete Signup")),
               ],

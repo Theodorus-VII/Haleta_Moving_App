@@ -14,6 +14,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(MoverSigningUp(event.mover));
     });
 
+    on<AuthDefaultEvent>((event, emit) async {
+      emit(AuthLoading());
+    });
     on<AuthSignIn>((event, emit) async {
       print("AUTHSIGNIN");
       try {
@@ -21,7 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             await authRepository.signIn(event.email, event.password);
         print("account $account");
         print("AUTHENTICATED");
-        emit(Authenticated(user: account.data as User));
+        emit(Authenticated(user: account.data));
       } catch (error) {
         print("unAUTHENTICATED $error");
         emit(Unauthenticated(error));
@@ -32,12 +35,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print("Mover SignUp");
       try {
         ApiResponse account = await authRepository.moverSignUp(event.mover);
-        if (account.apiError == null){
+        if (account.apiError != null) {
           throw "${account.apiError}";
         }
-        emit(Authenticated());
+        emit(AuthSignUpSuccess());
       } catch (e) {
-        print("here");
+        print("signup failed here");
         emit(SignUpFailed('$e'));
       }
     });
@@ -46,15 +49,39 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print("User signup");
       try {
         ApiResponse account = await authRepository.userSignUp(event.newUser);
-        if (account.apiError == null){
+        if (account.apiError != null) {
           throw "${account.apiError}";
         }
-        print("account");
-        emit(Authenticated());
+        emit(AuthSignUpSuccess());
+        return;
       } catch (e) {
         print("e");
         emit(SignUpFailed('$e'));
       }
     });
+
+    on<AuthGetUser>((event, emit) {
+      // emit();
+    });
+
+    on<AuthLogoutEvent>(
+      (event, emit) async {
+        print("logging out");
+        if (await authRepository.logout()) {
+          emit(AuthLogoutSuccess());
+        }
+      },
+    );
+
+    on<AuthUserUpdate>(
+      (event, emit) async {
+        if (await authRepository.remoteDataProvider
+            .updatePassword(event.password)) {
+          emit(AuthUserUpdateSuccess());
+        } else {
+          emit(AuthUserUpdateFail());
+        }
+      },
+    );
   }
 }

@@ -1,6 +1,5 @@
 part of 'user_main_bloc.dart';
 
-@freezed
 abstract class UserMainEvent extends Equatable {
   const UserMainEvent();
 
@@ -19,11 +18,7 @@ class UserMainScreenEvent extends UserMainEvent {
 
 class UserMoverDetails extends UserMainEvent {
   final Mover mover;
-  final List<Review>? reviews;
-  const UserMoverDetails(this.mover, {this.reviews});
-
-  @override
-  List<Object> get props => [mover];
+  const UserMoverDetails(this.mover);
 }
 
 class UserUpdateEvent extends UserMainEvent {
@@ -46,3 +41,9 @@ class UserSubmitUpdateEvent extends UserMainEvent {
 class UserLogoutEvent extends UserMainEvent {}
 
 class UserDeleteEvent extends UserMainEvent {}
+
+class UserBookAppointmentEvent extends UserMainEvent {
+  final String bookdate;
+  final int moverId;
+  const UserBookAppointmentEvent(this.bookdate, this.moverId);
+}

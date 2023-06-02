@@ -33,12 +33,12 @@ export class AppointmentController {
     // just returns any records of user appointments. specifics of functionality will be done during frontend if needed
     // can work for mover too ig, since he's also a user
     return this.appointmentService.getUserAppointments(user);
-  } // - user can see when the date booked is.
+  }
 
   @Roles(Role.MOVER)
   @UseGuards(RolesGuard)
   @Get('mover')
- async  getMoverAppointments(@GetUser('Id') moverId: number) {
+  async getMoverAppointments(@GetUser('Id') moverId: number) {
     //for the mover to see his booked schedule
 
     // if the status of the appointment is -1, mover has rejected the request. the user should be able to see that and then delete the appointment
@@ -55,6 +55,8 @@ export class AppointmentController {
     return await this.appointmentService.addAppointment(customerId, appointmentDto);
   } //making a new appointment. needs to cross check with the chosen mover's schedule first.
 
+  @Roles(Role.MOVER, Role.USER)
+  @UseGuards(RolesGuard)
   @Patch()
   userUpdateAppointment(
     @Body() dto: UpdateAppointmentDto,

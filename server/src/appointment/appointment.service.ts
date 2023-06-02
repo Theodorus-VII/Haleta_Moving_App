@@ -4,7 +4,7 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { Role, User } from '@prisma/client';
+import { Appointment, Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   AppointmentDto,
@@ -41,44 +41,68 @@ export class AppointmentService {
       //   });
       // }
       //   needs to return appointment in a properly formatted way
+      console.log(appointments);
       return { appointments };
     } catch (e) {
       return { message: 'No user by this id' };
     }
   }
-  async getMoverNameById(moverId: number){
-    try{
-      const mover = await this.prisma.mover.findFirst({where: {userId: moverId}});
-      return {mover};
-    } catch(e){
-      throw new HttpException("some exception", HttpStatus.BAD_REQUEST);
+  async getMoverNameById(moverId: number) {
+    try {
+      const mover = await this.prisma.mover.findFirst({
+        where: { userId: moverId },
+      });
+      return { mover };
+    } catch (e) {
+      throw new HttpException('some exception', HttpStatus.BAD_REQUEST);
     }
   }
 
-  async moverRejectAppointment(appointmentId: number, moverId: number){
-    try{
-      const appointment = await this.prisma.appointment.findFirst({where: {Id: appointmentId}});
-      if (appointment.moverId != moverId){
-        throw new HttpException("wrong mover", HttpStatus.FORBIDDEN)
+  async moverRejectAppointment(appointmentId: number, moverId: number) {
+    try {
+      const appointment = await this.prisma.appointment.findFirst({
+        where: { Id: appointmentId },
+      });
+      if (appointment.moverId != moverId) {
+        throw new HttpException('wrong mover', HttpStatus.FORBIDDEN);
       }
-      return await this.prisma.appointment.update({where: {Id: appointment.Id}, data: {status: -1}});
-    } catch(e){
+      return await this.prisma.appointment.update({
+        where: { Id: appointment.Id },
+        data: { status: -1 },
+      });
+    } catch (e) {
       return e;
     }
   }
   async getMoverAppointments(moverId: number) {
     try {
       console.log(moverId);
-      const user = await this.prisma.user.findUnique({
-        where: { Id: moverId },
-      });
-      console.log(user);
+      // const user = await this.prisma.user.findUnique({
+      //   where: { Id: moverId },
+      // });
+      // console.log(user);
       const appointments = await this.prisma.appointment.findMany({
         where: { moverId: moverId },
       });
+      // var ret = []
+      // for (var appointment of appointments){
+      //   var user = await this.prisma.user.findUnique({
+      //     where: {Id: appointment.customerId}
+      //   });
+      //   ret.push({
+      //     customerFname: user.firstName,
+      //     customerLname: user.lastName,
+      //     customerPhoneNo: user.phoneNumber,
+      //     bookDate: appointment.bookDate,
+      //     status: appointment.status,
+      //     startLocation: appointment.startLocation,
+      //     Id: appointment.Id
+      //   })
+      // }
+      console.log(appointments);
       return { appointments };
     } catch (e) {
-      return { message: 'No mover by this id' };
+      return { message: e };
     }
   }
 
@@ -88,9 +112,13 @@ export class AppointmentService {
       where: { Id: customerId },
     });
     try {
-      const mover = await this.prisma.user.findFirst({
-        where: { Id: dto.moverId },
+      // console.log(`moverId ${dto.moverId}`);
+
+      const mover = await this.prisma.mover.findFirst({
+        // where: { Id: dto.moverId },
+        where: { userId: dto.moverId },
       });
+      console.log(`moverId ${mover.Id}`);
     } catch (e) {
       // return { message: 'No mover with these credentials' };
       throw new HttpException(
@@ -126,10 +154,16 @@ export class AppointmentService {
         where: { Id: dto.appointmentId },
       });
       if (appointment == null) {
-        throw 'No such appointment';
+        throw new HttpException(
+          { message: 'No such appointment' },
+          HttpStatus.BAD_REQUEST,
+        );
       }
       if (appointment.customerId != customerId) {
-        throw 'This appointment does not belong to this customer';
+        throw new HttpException(
+          { message: 'This appointment does not belong to this customer' },
+          HttpStatus.BAD_REQUEST,
+        );
       }
       await this.prisma.appointment.delete({
         where: { Id: dto.appointmentId },
@@ -137,7 +171,7 @@ export class AppointmentService {
       return { message: 'success' };
     } catch (e) {
       console.log(e);
-      return { message: e };
+      throw new HttpException({ message: e }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -149,12 +183,12 @@ export class AppointmentService {
       if (appointment == null) {
         throw 'No appointment my this Id.';
       }
-      if (appointment.moverId != customerId) {
-        console.log(appointment);
-        console.log(customerId);
+      // if (appointment.moverId != customerId) {
+      //   console.log(appointment);
+      //   console.log(customerId);
 
-        throw 'This appointment does not belong to this customer.';
-      }
+      //   throw 'This appointment does not belong to this customer.';
+      // }
       if (appointment.status == -1) {
         throw 'Appointment already rejected. Nothing more can be done with it.';
       }
@@ -174,8 +208,6 @@ export class AppointmentService {
         where: { Id: dto.appointmentId },
         data: {
           status: dto.status || undefined,
-          destination: dto.destination || undefined,
-          setDate: dto.setDate || undefined,
           // startTime: f ? new Date() : undefined,
         },
       });

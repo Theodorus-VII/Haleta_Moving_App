@@ -155,10 +155,12 @@ export class AuthService {
       });
 
       if (!user) {
+        console.log("incorrect credentials");
         throw new ForbiddenException('Incorrect Credentials!');
       }
       const passmatch = await argon.verify(user.hash, dto.password);
       if (passmatch) {
+        console.log("correct password");
         return this.signToken(user.Id, user.email, user.role);
       } else {
         // return { message: 'Incorrect password' };

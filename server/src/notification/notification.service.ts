@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { NotificationDto } from './dto/notification.dto';
+import { DeleteNotificationDto, NotificationDto } from './dto/notification.dto';
 
 @Injectable()
 export class NotificationService {
@@ -22,23 +22,13 @@ export class NotificationService {
         throw 'Not your appointment';
       }
 
-      const notifications = await this.prisma.notification.findMany({
+      var notifications = await this.prisma.notification.findMany({
         where: { appointmentId: appointment.Id },
       });
-      // return {
-      //   message: 'success',
-      //   data: notifications,
-      // };
-      var n = [];
-      // for (var i = 0; i < notifications.length; i++) {
-      //   var mover = await 
-      //   n.push({ Id: notifications[i].Id,
-      //   message: notifications[i].update,
-
-      // });
-      // }
+      notifications.sort((a,b) => (a.stage - b.stage))
+      console.log(notifications);
       return {
-        notifications,
+        notification: notifications,
       };
     } catch (e) {
       return {
@@ -67,6 +57,13 @@ export class NotificationService {
           stage: dto.stage,
         },
       });
+
+      if (dto.stage == 3){
+        // appointment also complete
+        const appointment = await this.prisma.appointment.update({where: {Id: dto.appointmentId}, data: {status: 2}});
+        console.log(appointment);
+
+      }
       return { message: 'success' };
     } catch (e) {
       return {
@@ -109,13 +106,30 @@ export class NotificationService {
         },
         data: { update: `${notification.update} *${dto.update} ` },
       });
+      if (dto.stage == 3){
+        // appointment also complete
+        const appointment = await this.prisma.appointment.update({where: {Id: dto.appointmentId}, data: {status: 2}});
+        console.log(appointment);
+      }
+      
       return { message: 'success', data: editedNotification };
     } catch (e) {
+      console.log(e);
       return { message: e };
     }
   }
 
-  async deleteNotification() {
+  async deleteNotification(dto: DeleteNotificationDto) {
     // need to decide when this can be done
+    console.log("deleting notification");
+    try{
+      const notification = await this.prisma.notification.delete({where: {stageIdentifier: {stage: dto.stage, appointmentId: dto.appointmentId} }});
+      return {message: "success"};
+    } catch (e){
+      throw new HttpException(
+        { message: e },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

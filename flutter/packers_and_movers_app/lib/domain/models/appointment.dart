@@ -5,44 +5,32 @@ class Appointment {
   final int Id;
   final int customerId;
   final int moverId;
-  final String startLocation;
-  final String destination;
-  final DateTime setDate;
-
-  Appointment({
-    required this.Id,
-    required this.customerId,
-    required this.moverId,
-    required this.startLocation,
-    required this.destination,
-    required this.setDate,
-  });
+  final double status;
+  final String? bookDate;
+  const Appointment(this.Id, this.customerId, this.moverId, this.status,
+      {this.bookDate});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'Id': Id,
+      'customerId': customerId,
       'moverId': moverId,
-      'setDate': setDate.millisecondsSinceEpoch,
-      'startLocation': startLocation,
-      'destination': destination,
+      'status': status,
+      'bookDate': bookDate
     };
   }
 
   factory Appointment.fromMap(Map<String, dynamic> map) {
-    print('here');
     return Appointment(
-      Id: map['Id'],
-      customerId: map['customerId'],
-      moverId: map['moverId'],
-      startLocation: map['startLocation'],
-      destination: map['destination'],
-      setDate: DateTime.parse(map['setDate']),
+      map['Id'] as int,
+      map['customerId'] as int,
+      map['moverId'] as int,
+      map['status'] / 4.0 as double,
+      bookDate: map['setDate'],
     );
   }
-
   String toJson() => json.encode(toMap());
 
   factory Appointment.fromJson(String source) =>
       Appointment.fromMap(json.decode(source) as Map<String, dynamic>);
 }
-
-

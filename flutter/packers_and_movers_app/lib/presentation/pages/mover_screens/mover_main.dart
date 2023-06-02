@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:packers_and_movers/components/icon_builder.dart';
+import 'package:packers_and_movers_app/application/appointments/bloc/appointment_bloc.dart';
 import '../../../application/auth/signin_bloc/auth_bloc.dart';
 import '../../../application/auth/signin_bloc/auth_state.dart';
 import '../../widgets/widgets.dart';
 import '../constants/constants.dart';
+import '../../../domain/models/mover.dart';
 
 class MoverMain extends StatefulWidget {
   const MoverMain({Key? key}) : super(key: key);
@@ -17,13 +18,15 @@ class MoverMain extends StatefulWidget {
 
 class _moverMainState extends State<MoverMain> {
   String moverName = 'Mover 1';
+  String username = 'username';
   String city = 'Addis Ababa';
   String rate = '\$ 30';
   bool isVerified = true;
   double rating = 4.5;
   String moverAviUrl = 'assets/images/profilePicture2.jpg';
   String carImageUrl = 'assets/images/carPicture2.jpg';
-  int licenseNumber = 8928392;
+  String licenseNumber = '8928392';
+  String phoneNumber = '8928392';
 
   final List<Comment> comments = [
     Comment('User1', 'Great post!', 'assets/images/profilePicture2.jpg'),
@@ -40,9 +43,21 @@ class _moverMainState extends State<MoverMain> {
       builder: (context, state) {
         assert(state is Authenticated);
         if (state is Authenticated) {
-          moverName = state.user!.username;
-          // city = state.user!.
-          moverId = state.user!.Id;
+          print("USER IS ${state.user}");
+          if (state.user is Mover) {
+            final Mover mover = state.user;
+            moverName = '${mover.firstName} ${mover.lastName}';
+            username = mover.username;
+            rate = mover.baseFee;
+            city = mover.location;
+            licenseNumber = mover.licenceNumber;
+            phoneNumber = mover.phoneNumber;
+          }
+          BlocProvider.of<AppointmentBloc>(context)
+              .add(AppointmentDefaultEvent());
+          // moverName = state.user!.username;
+          // // city = state.user!.
+          // moverId = state.user!.Id;
         }
         return Scaffold(
           appBar: AppBar(
@@ -70,6 +85,7 @@ class _moverMainState extends State<MoverMain> {
                         ),
                         onPressed: () {
                           // Go to User Settings
+                          context.pushNamed('user_edit_screen');
                         },
                       ),
                     ),
@@ -77,6 +93,8 @@ class _moverMainState extends State<MoverMain> {
                       onTap: () {
                         setState(() {
                           // context.push('/mover/see_bookings');
+                          final event = AppointmentMoverRead();
+                          BlocProvider.of<AppointmentBloc>(context).add(event);
                           context.pushNamed('mover_see_bookings');
                         });
                       },
@@ -134,7 +152,7 @@ class _moverMainState extends State<MoverMain> {
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
-                                'I am moverName1, I work in Addis Ababa. I charge \ per kilometer.',
+                                'I am $moverName, I work in $city. I charge $rate per kilometer.',
                                 textAlign: TextAlign.justify,
                                 style: TextStyle(
                                   color: Colors.grey.shade600,
@@ -205,7 +223,7 @@ class _moverMainState extends State<MoverMain> {
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10.0, vertical: 5.0),
-                              child: Text('Phone: $licenseNumber'),
+                              child: Text('Phone: $phoneNumber'),
                             ),
                           ],
                         ),

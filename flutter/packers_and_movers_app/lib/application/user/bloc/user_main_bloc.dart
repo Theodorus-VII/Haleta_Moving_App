@@ -10,22 +10,17 @@ part 'user_main_state.dart';
 
 class UserMainBloc extends Bloc<UserMainEvent, UserMainState> {
   final UserRepository userRepository = UserRepository();
-  UserMainBloc() : super(UserMainScreenState([])) {
+  UserMainBloc() : super(const UserMainScreenState([])) {
     on<UserMainScreenEvent>((event, emit) async {
       List<Mover> movers = await userRepository.getMovers();
       print("fetched movers: $movers");
       emit(UserMainScreenLoadingState(movers));
     });
 
-    on<UserMoverDetails>((event, emit) {
-      Mover mover = event.mover;
-      print("opening mover details screen");
-      emit(UserMoverDetailsState(mover));
+    on<UserMoverDetails>((event, emit) async {
+      emit(UserMoverDetailsState(event.mover));
     });
 
-    on<UserSubmitUpdateEvent>((event, emit) async {
-      userRepository.userDataProvider.updatePassword(event.password);
-      emit(UserUpdateSuccessful());
-    });
+    on<UserLogoutEvent>((event, emit) {});
   }
 }

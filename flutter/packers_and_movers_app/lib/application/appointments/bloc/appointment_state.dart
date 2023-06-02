@@ -1,29 +1,33 @@
+// ignore_for_file: non_constant_identifier_names
+
 part of 'appointment_bloc.dart';
 
 abstract class AppointmentState extends Equatable {
-  const AppointmentState();
-
   @override
-  List<Object> get props => [];
+  List<Object> get props {
+    return [];
+  }
 }
 
-class AppointmentsLoadedState extends AppointmentState {
-  final List<Appointment> appointments;
-  const AppointmentsLoadedState(this.appointments);
+class AppointmentScreen extends AppointmentState{}
 
-  @override
-  List<Object> get props => [appointments];
+// Create
+class AppointmentCreateSuccess extends AppointmentState {}
+
+class AppointmentCreateFail extends AppointmentState {}
+
+// READ
+class AppointmentRead extends AppointmentState {
+  final List<dynamic> appointments;
+  AppointmentRead(this.appointments);
 }
 
-class AppointmentsLoadFailed extends AppointmentState {
-  final Object error;
-  const AppointmentsLoadFailed(this.error);
-}
+// UPDATE
+class AppointmentUpdateSuccess extends AppointmentState {}
 
-class AppointmentsLoadingState extends AppointmentState {
-  const AppointmentsLoadingState();
-}
+class AppointmentUpdateFail extends AppointmentState {}
 
-class AppointmentSubmitted extends AppointmentState{}
-class AppointmentSubmitFailed extends AppointmentState{}
+// DELETE
+class AppointmentDeleteSuccess extends AppointmentState {}
 
+class AppointmentDeleteFail extends AppointmentState {}

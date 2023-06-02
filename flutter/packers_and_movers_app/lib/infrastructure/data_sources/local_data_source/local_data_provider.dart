@@ -106,4 +106,17 @@ class LocalDataProvider {
     }
     return result;
   }
+
+  Future<bool> logout() async {
+    db = await openDb();
+    try {
+      // await db.execute("DELETE FROM user_details");
+      await db.delete('user_details');
+      print("deleted db");
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+    return true;
+  }
 }

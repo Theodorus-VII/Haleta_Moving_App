@@ -15,6 +15,7 @@ import 'landing.dart';
 import 'presentation/pages/auth_screens/auth.dart';
 import 'presentation/pages/mover_screens/mover.dart';
 import 'presentation/pages/user_screens/user.dart';
+import 'package:packers_and_movers_app/application/notifications/bloc/notifications_bloc.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
@@ -108,6 +109,12 @@ final _router = GoRouter(routes: [
         return MoverSeeOrders();
       }),
   GoRoute(
+      name: "mover_manage_order",
+      path: '/mover/manage_order',
+      builder: (BuildContext context, GoRouterState state) {
+        return const ManageOrder();
+      }),
+  GoRoute(
     path: '/mover',
     name: 'mover_main',
     builder: (context, state) {
@@ -125,6 +132,8 @@ void main() {
                 authRepository: AuthRepository(RemoteAuthDataProvider()))),
         BlocProvider(create: (context) => UserMainBloc()),
         BlocProvider(create: (context) => AppointmentBloc()),
+        BlocProvider(create: (context) => AppointmentBloc()),
+        BlocProvider(create: (context) => NotificationBloc()),
       ],
       child: MaterialApp.router(
         theme: theme,

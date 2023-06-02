@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:http/http.dart';
+import 'package:packers_and_movers_app/application/appointments/bloc/appointment_bloc.dart';
 
 class NotificationFromMover {
   final double value;
   String? message;
+  final double deliveryStatus;
 
-  NotificationFromMover(this.value, {this.message = ''});
+  NotificationFromMover(this.value,
+      {this.message = '', this.deliveryStatus = 0});
 }
 
 class Item {
   final String name;
   final String rating;
   final String phone;
+  final int appointmentId;
   bool expanded;
-
-  Item(this.name, this.rating, this.phone, {this.expanded = false});
+  Item(this.name, this.rating, this.phone, this.appointmentId,
+      {this.expanded = false});
 }
 
 class ExpandableListItem extends StatefulWidget {
@@ -35,13 +42,29 @@ class _ExpandableListItemState extends State<ExpandableListItem> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.noti.value < 0 && !dismissed) {
+    print(widget.noti.value);
+    if (widget.noti.deliveryStatus < 0) {
       return Dismissible(
         key: Key(widget.item.name),
         direction: DismissDirection.horizontal,
         onDismissed: (direction) {
           setState(() {
             dismissed = true;
+            print("ORIGINAL STATE ${context.read<AppointmentBloc>().state}");
+            AppointmentEvent event =
+                AppointmentUserDelete(widget.item.appointmentId);
+            BlocProvider.of<AppointmentBloc>(context).add(event);
+            var state = context.read<AppointmentBloc>();
+            if (state is AppointmentDeleteFail) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text("Delete Fail")));
+              // BlocProvider.of<AppointmentBloc>(context).add(originalState);
+            } else if (state is AppointmentDeleteSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Delete Successful")));
+            }
+            // BlocProvider.of<AppointmentBloc>(context).add(AppointmentUserRead(movers));
+            context.pop();
           });
           // Handle the dismissal action here
           // This function will be called when the tile is swiped away
@@ -126,7 +149,7 @@ class _ExpandableListItemState extends State<ExpandableListItem> {
                   if (widget.item.expanded)
                     Builder(
                       builder: (context) {
-                        if (widget.noti.value < 0) {
+                        if (widget.noti.deliveryStatus < 0) {
                           return Column(
                             children: [
                               const SizedBox(height: 16.0),
@@ -201,6 +224,13 @@ class _ExpandableListItemState extends State<ExpandableListItem> {
                                 ),
                               ],
                             ),
+                            if (progressValue < 1) ...[
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text("Message"),
+                              Text('${widget.noti.message}'),
+                            ],
                             if (progressValue == 1.0) ...[
                               const SizedBox(height: 16.0),
                               Card(
@@ -243,6 +273,12 @@ class _ExpandableListItemState extends State<ExpandableListItem> {
                                           // Handle submit action here
                                           // This function will be called when the submit button is pressed
                                           // You can access the rating and comment variables here
+                                          // BlocBuilder<ReviewBloc,
+                                          //     ReviewState>(
+                                          //   builder: (context, state) {
+                                          //     return print('Rating: $rating');
+                                          // },
+                                          // );
                                           print('Rating: $rating');
                                           print('Comment: $comment');
                                         },

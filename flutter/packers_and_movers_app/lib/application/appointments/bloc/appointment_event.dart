@@ -1,43 +1,42 @@
 part of 'appointment_bloc.dart';
 
 abstract class AppointmentEvent extends Equatable {
-  const AppointmentEvent();
-
   @override
-  List<Object> get props => [];
+  List<Object> get props {
+    return [];
+  }
 }
 
-class AppointmentsLoading extends AppointmentEvent {
-  const AppointmentsLoading();
+class AppointmentDefaultEvent extends AppointmentEvent{}
+
+// CREATE - only customer can create
+class AppointmentUserCreate extends AppointmentEvent {
+  final String bookdate;
+  final int moverId;
+  AppointmentUserCreate(this.bookdate, this.moverId);
+}
+////////////////////////////////////////////////////////////////
+
+// READ//////////////
+class AppointmentUserRead extends AppointmentEvent {
+  final List<Mover> movers;
+  AppointmentUserRead(this.movers);
 }
 
-class AppointmentsLoadedEvent extends AppointmentEvent {
-  final List<Appointment> appointments;
-  const AppointmentsLoadedEvent(this.appointments);
+class AppointmentMoverRead extends AppointmentEvent {}
+/////////////////////////////////////////////////////////////////
 
-  @override
-  List<Object> get props => [appointments];
-}
-
-class UserPostAppointmentEvent extends AppointmentEvent {
-  // final AppointmentDto appointment;
-  final Map<String, dynamic> appointment;
-  const UserPostAppointmentEvent(this.appointment);
-}
-
-class AppointmentDelete extends AppointmentEvent {
+// Update - only mover can update(on declining/accepting request)
+class AppointmentMoverUpdate extends AppointmentEvent {
+  final int statusUpdate;
   final int appointmentId;
-  const AppointmentDelete(this.appointmentId);
-
-  @override
-  List<Object> get props => [appointmentId];
+  AppointmentMoverUpdate(this.appointmentId, this.statusUpdate);
 }
+/////////////////////////////////////////////////////////////////
 
-class MoverRejectAppointmentEvent extends AppointmentEvent {
+// DELETE - only user on declined request
+class AppointmentUserDelete extends AppointmentEvent {
   final int appointmentId;
-  const MoverRejectAppointmentEvent(this.appointmentId);
+  AppointmentUserDelete(this.appointmentId);
 }
-
-
-class getUserAppointments extends AppointmentEvent{
-}
+/////////////////////////////////////////////////////////////////

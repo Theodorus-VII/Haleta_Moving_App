@@ -9,7 +9,7 @@ import {
   UseGuards,
   Body,
 } from '@nestjs/common';
-import { NotificationDto } from './dto/notification.dto';
+import { DeleteNotificationDto, NotificationDto } from './dto/notification.dto';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { Role } from '@prisma/client';
 import { GetUser, Roles } from 'src/auth/decorator';
@@ -41,6 +41,7 @@ export class NotificationController {
     @Body() dto: NotificationDto,
   ) {
     console.log(moverId);
+    console.log("creating notification");
     // when the mover completes a certain stage of the delivery, sends it here
     return await this.notificationService.postNotification(moverId, dto);
   }
@@ -52,12 +53,15 @@ export class NotificationController {
     @GetUser('Id') moverId: number,
     @Body() dto: NotificationDto,
   ) {
+    console.log("patching notification");
+    console.log(dto.stage);
     // should be for updating these.
     return await this.notificationService.patchNotification(moverId, dto);
   }
 
-  @Delete(':id')
-  async deleteNotification(@Param('id', ParseIntPipe) appointmentId: number) {
-    // not sure if deletion should even be allowed.
+  @Delete()
+  async deleteNotification( @Body() dto: DeleteNotificationDto) {
+  // not sure if deletion should even be allowed.
+  return await this.notificationService.deleteNotification(dto);
   }
 }

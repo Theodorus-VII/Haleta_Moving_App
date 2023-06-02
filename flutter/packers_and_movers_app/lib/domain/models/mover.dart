@@ -6,6 +6,7 @@ import 'package:packers_and_movers_app/domain/models/models.dart';
 class Mover {
   Mover(
       {required this.Id,
+      required this.moverId,
       required this.firstName,
       required this.lastName,
       // required this.token,
@@ -19,8 +20,10 @@ class Mover {
       required this.baseFee,
       required this.verified,
       required this.location,
-      this.role = 'MOVER'});
+      this.role = 'MOVER',
+      this.token = ""});
   final int Id;
+  final int moverId;
   final String username;
   final String role;
   final String email;
@@ -28,16 +31,18 @@ class Mover {
   final String lastName;
   final String phoneNumber;
   final String licenceNumber;
-   String? profilePic;
-   String? carPic;
+  String? profilePic;
+  String? carPic;
   final String location;
   final String baseFee;
   final bool Banned;
   final bool verified;
+  final String token;
   // final String token;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'Id': Id,
       'email': email,
       'username': username,
       'role': role,
@@ -46,7 +51,8 @@ class Mover {
       'phoneNumber': phoneNumber,
       'baseFee': baseFee,
       'licenceNumber': licenceNumber,
-      'location': location
+      'location': location,
+      'token': token
     };
   }
 
@@ -65,23 +71,26 @@ class Mover {
     print(map['verified']);
     print(map['baseFee']);
     print(map['location']);
-    print(map['location']);
 
-    return Mover(
-      Id: map['Id'],
-      username: map['username'],
-      email: map['email'],
-      firstName: map['firstName'],
-      lastName: map['lastName'],
-      phoneNumber: map['phoneNumber'],
-      licenceNumber: map['licenceNumber'],
-      profilePic: map['profilePic'],
-      carPic: map['carPic'],
-      Banned: map['Banned'],
-      verified: map['verified'],
-      baseFee: map['baseFee'],
-      location: map['location'],
-    );
+
+    var mover = Mover(
+        Id: map['Id'],
+        username: map['username'],
+        email: map['email'],
+        firstName: map['firstName'],
+        lastName: map['lastName'],
+        phoneNumber: map['phoneNumber'],
+        licenceNumber: map['licenceNumber'],
+        profilePic: map['profilePic'],
+        carPic: map['carPic'],
+        Banned: map['Banned'],
+        verified: map['verified'],
+        baseFee: map['baseFee'],
+        location: map['location'],
+        moverId: map['moverId'],
+        token: map['token']??"");
+    print("mover");
+    return mover;
   }
 
   String toJson() => json.encode(toMap());

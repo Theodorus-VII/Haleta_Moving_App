@@ -42,11 +42,11 @@ class UserUpdateFailed extends UserMainState {
 }
 
 class UserDeleteSuccessful extends UserMainState {
-  var message;
+  final message;
   UserDeleteSuccessful({this.message});
 }
 
 class UserDeleteUnSuccessful extends UserMainState {
-  var message;
+  final message;
   UserDeleteUnSuccessful({this.message});
 }

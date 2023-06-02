@@ -27,7 +27,7 @@ class AuthLoading extends AuthState {
 }
 
 class Authenticated extends AuthState {
-  final User? user;
+  final dynamic? user;
 
   const Authenticated({this.user});
 
@@ -75,6 +75,18 @@ class SignUpFailed extends AuthState {
   @override
   List<Object> get props => [];
 }
+
+class AuthLogoutSuccess extends AuthState{}
+class AuthSignUpSuccess extends AuthState{}
+
+class AuthUserUpdateSuccess extends AuthState{}
+class AuthUserUpdateFail extends AuthState{}
+
+
+
+// class MoverMainState extends AuthState {
+//   final Mover mover
+// }
 
 // class AuthSignupLoading extends AuthState{}
 

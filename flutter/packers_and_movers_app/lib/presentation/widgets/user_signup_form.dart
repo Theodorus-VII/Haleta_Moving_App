@@ -32,8 +32,23 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        print(state);
+        if (state is SignUpFailed) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content:
+                  Text("Email Taken. Please choose another Email Address")));
+        } else if (state is MoverSigningUp) {
+          context.pushNamed('mover_signup');
+        } else if (state is AuthSignUpSuccess) {
+          print(state);
+          BlocProvider.of<AuthBloc>(context).add(AuthDefaultEvent());
+          context.goNamed('signin');
+        }
+      },
       builder: (context, state) {
+        print(state);
         return Scaffold(
           appBar: AppBar(),
           body: Center(
@@ -62,37 +77,37 @@ class _SignUpFormState extends State<SignUpForm> {
                               controller: usernameController,
                               labelText: 'Username',
                               hintText: 'jondoe21',
-                              icon: Icon(Icons.person)),
+                              icon: const Icon(Icons.person)),
                           BuildTextField(
                               controller: firstNameController,
                               labelText: 'First Name',
                               hintText: 'Jon',
-                              icon: Icon(Icons.person_2_rounded)),
+                              icon: const Icon(Icons.person_2_rounded)),
                           BuildTextField(
                               controller: lastNameController,
                               labelText: 'Last Name',
                               hintText: 'Doe',
-                              icon: Icon(Icons.person_2_rounded)),
+                              icon: const Icon(Icons.person_2_rounded)),
                           BuildTextField(
                               controller: emailController,
                               labelText: 'Email',
                               hintText: 'jondoe@gmail.com',
-                              icon: Icon(Icons.email_rounded)),
+                              icon: const Icon(Icons.email_rounded)),
                           BuildTextField(
                               controller: phoneNumberController,
                               labelText: 'Phone Number',
                               hintText: '+2519554477',
-                              icon: Icon(Icons.phone)),
+                              icon: const Icon(Icons.phone)),
                           BuildTextField(
                             controller: passwordController,
-                            icon: Icon(Icons.lock_outline_rounded),
+                            icon: const Icon(Icons.lock_outline_rounded),
                             labelText: 'Password',
                             hintText: '********',
                             obscured: true,
                           ),
                           BuildTextField(
                             controller: confirmPasswordController,
-                            icon: Icon(Icons.lock_rounded),
+                            icon: const Icon(Icons.lock_rounded),
                             labelText: 'Confirm Password',
                             hintText: '********',
                             obscured: true,
@@ -140,7 +155,8 @@ class _SignUpFormState extends State<SignUpForm> {
                                         AuthMoverSignUp(mover: user_info);
                                     BlocProvider.of<AuthBloc>(context)
                                         .add(event);
-                                    context.pushNamed('mover_signup');
+                                    // context.pushNamed('mover_signup');
+
                                     // MoverSignupScreen();
                                   } else {
                                     UserDto new_user =
@@ -150,13 +166,6 @@ class _SignUpFormState extends State<SignUpForm> {
                                         AuthUserSignUp(new_user);
                                     BlocProvider.of<AuthBloc>(context)
                                         .add(event);
-
-                                    if (state is SignUpFailed) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  "Email Taken. Please choose another Email Address")));
-                                    }
                                   }
                                 }
                               },

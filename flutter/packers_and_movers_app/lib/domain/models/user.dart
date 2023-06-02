@@ -48,8 +48,6 @@ class User extends Equatable {
     // print(map['email']);
     // print(map['phoneNumber']);
     // print(map['username']);
-    // print(map['role']);
-    // print(map['token']);
 
     return User(
       Id: map['Id'],
@@ -58,7 +56,7 @@ class User extends Equatable {
       email: map['email'],
       phoneNumber: map['phoneNumber'],
       username: map['username'],
-      role: map['role'],
+      role: (map['role'] == null) ? "USER" : map['role'],
       token: map['token'],
     );
   }
