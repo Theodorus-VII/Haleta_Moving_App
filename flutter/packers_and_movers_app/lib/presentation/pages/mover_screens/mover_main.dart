@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 // import 'package:packers_and_movers/components/icon_builder.dart';
+import '../../../application/auth/signin_bloc/auth_bloc.dart';
+import '../../../application/auth/signin_bloc/auth_state.dart';
 import '../../widgets/widgets.dart';
 import '../constants/constants.dart';
 
@@ -30,206 +33,221 @@ class _moverMainState extends State<MoverMain> {
     Comment('User5', 'I learned a lot.', 'assets/images/profilePicture2.jpg'),
   ];
 
+  int moverId = 0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: kPrimaryColor,
-        automaticallyImplyLeading: false, // Hide the default back button
-        flexibleSpace: Container(
-          padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 25.0),
-          alignment: Alignment.bottomCenter,
-          decoration: const BoxDecoration(color: kPrimaryColor),
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.settings,
-                      size: 28.0,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      // Go to User Settings
-                    },
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      context.go('/mover/see_bookings');
-                    });
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Container(
-                      margin: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'See Bookings',
-                        style: kActiveNavBarStyle,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            Container(
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        assert(state is Authenticated);
+        if (state is Authenticated) {
+          moverName = state.user!.username;
+          // city = state.user!.
+          moverId = state.user!.Id;
+        }
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: kPrimaryColor,
+            automaticallyImplyLeading: false, // Hide the default back button
+            flexibleSpace: Container(
               padding:
                   const EdgeInsets.symmetric(vertical: 25.0, horizontal: 25.0),
-              height: 180.0,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CircleAvatar(
-                      radius: 40.0,
-                      backgroundImage: AssetImage(moverAviUrl),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 0.0),
-                          child: Row(
-                            children: [
-                              Text('$moverName ', style: kTitleStyle),
-                              if (isVerified) verifiedCheck(),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 5.0),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text(
-                            'I am moverName1, I work in Addis Ababa. I charge \$35 per kilometer.',
-                            textAlign: TextAlign.justify,
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontFamily: 'Roboto',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(10.0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Column(
+              alignment: Alignment.bottomCenter,
+              decoration: const BoxDecoration(color: kPrimaryColor),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      margin: const EdgeInsets.all(5.0),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.black.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      child: Card(
-                        color: Colors.white60,
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.settings,
+                          size: 28.0,
+                          color: Colors.white,
                         ),
-                        child: Image(
-                          image: AssetImage(carImageUrl),
-                          height: 200.0,
-                          // width: 200.0,
-                          fit: BoxFit.fill,
-                        ),
+                        onPressed: () {
+                          // Go to User Settings
+                        },
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 5.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              RatingStars(rating: rating),
-                              const SizedBox(width: 5.0),
-                              Text(': rated > ${rating.floor().toDouble()}',
-                                  style: kSmallConentStyle),
-                            ],
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          // context.push('/mover/see_bookings');
+                          context.pushNamed('mover_see_bookings');
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'See Bookings',
+                            style: kActiveNavBarStyle,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 5.0),
-                          child: Row(
-                            children: [
-                              Text('License Plate: $licenseNumber'),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 5.0),
-                          child: Text('Phone: $licenseNumber'),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            // Rest of the body content here
-            Container(
-              color: Colors.grey[200],
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Comments',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+          ),
+          body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 25.0, horizontal: 25.0),
+                  height: 180.0,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CircleAvatar(
+                          radius: 40.0,
+                          backgroundImage: NetworkImage(
+                              'http://10.0.2.2:3000/movers/images/car/$moverId'),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  15.0, 10.0, 15.0, 0.0),
+                              child: Row(
+                                children: [
+                                  Text('$moverName ', style: kTitleStyle),
+                                  if (isVerified) verifiedCheck(),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 5.0),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                'I am moverName1, I work in Addis Ababa. I charge \ per kilometer.',
+                                textAlign: TextAlign.justify,
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontFamily: 'Roboto',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Card(
+                            color: Colors.white60,
+                            elevation: 2.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Image(
+                              image: NetworkImage(
+                                  'http://10.0.2.2:3000/movers/images/car/$moverId'),
+                              height: 200.0,
+                              // width: 200.0,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 5.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  RatingStars(rating: rating),
+                                  const SizedBox(width: 5.0),
+                                  Text(': rated > ${rating.floor().toDouble()}',
+                                      style: kSmallConentStyle),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 5.0),
+                              child: Row(
+                                children: [
+                                  Text('License Plate: $licenseNumber'),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 5.0),
+                              child: Text('Phone: $licenseNumber'),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 8.0),
-                  ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: comments.length,
-                    itemBuilder: (context, index) {
-                      return CommentItem(
-                        username: comments[index].username,
-                        comment: comments[index].comment,
-                        userAviUrl: comments[index].userAviUrl,
-                      );
-                    },
+                ),
+                // Rest of the body content here
+                Container(
+                  color: Colors.grey[200],
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Comments',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: comments.length,
+                        itemBuilder: (context, index) {
+                          return CommentItem(
+                            username: comments[index].username,
+                            comment: comments[index].comment,
+                            userAviUrl: comments[index].userAviUrl,
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

@@ -26,7 +26,15 @@ class _SignInFormState extends State<SignInForm> {
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
       state.map(
           initial: (_) {},
-          authenticated: (_) => context.pushReplacementNamed('user'),
+          authenticated: (_) => {
+                if (state is Authenticated)
+                  {
+                    if (state.user!.role == "MOVER")
+                      {context.pushReplacementNamed('mover_main')}
+                    else
+                      {context.pushReplacementNamed('user')}
+                  }
+              },
           unauthenticated: (_) => context.pushReplacementNamed('signin'));
     }, builder: (context, state) {
       return Form(
@@ -125,9 +133,7 @@ class _SignInFormState extends State<SignInForm> {
                                     BlocProvider.of<AuthBloc>(context)
                                         .add(event);
 
-                                    if (state is Authenticated){
-                                      
-                                    }
+                                    if (state is Authenticated) {}
                                   }
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(

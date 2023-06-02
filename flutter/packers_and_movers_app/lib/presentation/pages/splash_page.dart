@@ -12,10 +12,33 @@ class SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        state.map(
-            initial: (_) {},
-            authenticated: (_) => context.pushReplacementNamed('user'),
-            unauthenticated: (_) => context.pushReplacementNamed('signin'));
+        if (state is Authenticated) {
+          print(state.user!.role);
+          if (state.user!.role == "MOVER") {
+            // context.pushReplacementNamed('mover_main');
+          } else {
+            // context.pushReplacementNamed('user');
+          }
+        }
+
+
+        // state.map(
+        //     initial: (_) {},
+        //     authenticated: (_) {
+        //       if (state is Authenticated) {
+        //         print(state.user!.role);
+        //       }
+        //       String role = 'user';
+        //       if (state is Authenticated) {
+        //         role = state.user!.role;
+        //       }
+        //       print(role);
+        //       if (role == 'MOVER') {
+        //         context.pushReplacementNamed('mover_main');
+        //       }
+        //       context.pushReplacementNamed('user');
+        //     },
+        //     unauthenticated: (_) => context.pushReplacementNamed('signin'));
       },
       child: _PageWidget(),
     );

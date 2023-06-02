@@ -26,7 +26,7 @@ class AuthRepository {
     print("Repository. initiating models");
     await localDataProvider.addUser(response.data as User);
     print('added to local db');
-    print(response.data);
+    print('repsponse data ${response.data}');
 
     String? t = await localDataProvider.getToken();
     print(t);

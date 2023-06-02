@@ -328,7 +328,6 @@ class _SeeMoverInfoState extends State<SeeMoverInfo> {
         // }));
         AppointmentEvent event = UserPostAppointmentEvent(
           {
-          'customerId': 0,
           'moverId': moverId,
           'setDate': bookForDate,
         }
