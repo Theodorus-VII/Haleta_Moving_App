@@ -1,3 +1,14 @@
+##SETTING UP DOCKER AND ENVIRONMENT
+```bash
+$yarn install
+````
+then, with docker running:
+```bash
+$yarn db:dev:restart
+```
+
+this will initialize docker containers, and set up the database for the server
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
@@ -31,6 +42,8 @@
 ```bash
 $ yarn install
 ```
+
+
 
 ## Running the app
 
