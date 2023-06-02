@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "appointments" ALTER COLUMN "bookDate" SET DEFAULT CURRENT_TIMESTAMP;

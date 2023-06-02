@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  GUEST
+  MOVER
+}
+
+model User {
+  // admin will also be in this table
+  Id          Int      @unique @default(autoincrement())
+  username    String
+  hash        String
+  role        Role     @default(USER)
+  email       String   @unique
+  firstName   String
+  lastName    String
+  joinDate    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  phoneNumber String
+
+  customerAppointment Appointment[] @relation("customerAppointment")
+  moverAppointment    Appointment[] @relation("moverAppointment")
+
+  customerReview Review[] @relation("customerReview")
+  moverReview    Review[] @relation("moverReview")
+
+  Mover Mover? @relation("User-Mover mapping")
+
+  @@map("users")
+}
+
+model Mover {
+  // extension of the user. the extra data provided will fill this. all movers will have this.
+  Id            Int     @unique @default(autoincrement())
+  userId        Int     @unique
+  licenceNumber String
+  profilePic    String?
+  carPic        String?
+  location      String?
+  idPic         String?
+  baseFee       String
+  Banned        Boolean @default(false)
+  verified      Boolean @default(false)
+
+  // relation fields
+  User User @relation(fields: [userId], references: [Id], name: "User-Mover mapping")
+
+  @@map("movers")
+}
+
+model Appointment {
+  Id            Int       @unique @default(autoincrement())
+  customerId    Int
+  moverId       Int
+  startLocation String
+  destination   String
+  startTime     DateTime?
+  endTime       DateTime?
+  setDate       DateTime  @db.Date //appointment date
+  bookDate      DateTime  @default(now())
+
+  status Int @default(0)
+  // -1 rejected. 0 pending. 1 ongoing. 2 done. 3 done with errors.
+
+  // realtion fields. ignore
+  customer      User           @relation(fields: [customerId], references: [Id], name: "customerAppointment")
+  mover         User           @relation(fields: [moverId], references: [Id], name: "moverAppointment")
+  Notifications Notification[] @relation(name: "appointmentNotification")
+
+  @@map("appointments")
+}
+
+model Notification {
+  Id            Int         @unique @default(autoincrement())
+  update        String
+  Appointment   Appointment @relation(fields: [appointmentId], references: [Id], name: "appointmentNotification")
+  appointmentId Int
+  timestamp     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  stage         Int
+  // stage would signify which stage of delivery the notification belongs to
+
+  @@id(fields: [stage, appointmentId], name: "stageIdentifier")
+  @@map("notifications")
+  
+}
+
+model Review {
+  Id         Int     @unique @default(autoincrement())
+  moverId    Int
+  customerId Int
+  Rating     Int     @default(0)
+  Review     String?
+
+  Customer User @relation(fields: [customerId], references: [Id], name: "customerReview")
+  Mover    User @relation(fields: [moverId], references: [Id], name: "moverReview")
+
+  @@map("reviews")
+}
